@@ -3,266 +3,147 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Lumi Steps Admin Editor</title>
+    <title>Baby Shoes Product Editor</title>
     <style>
       :root {
-        --cream: #fff9ef;
-        --linen: #f7f1e8;
-        --oat: #e8ded1;
-        --almond: #d9c4ae;
-        --taupe: #7b7067;
-        --cocoa: #443a33;
+        --text: #172331;
+        --muted: #8d9098;
+        --line: #ececec;
+        --accent: #ef3e35;
+        --star: #dea7a6;
       }
-
       * { box-sizing: border-box; }
       html { scroll-behavior: smooth; }
       body {
         margin: 0;
-        color: var(--cocoa);
+        color: var(--text);
         font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        background: radial-gradient(circle at top left, rgba(240, 221, 210, .45), transparent 30rem), linear-gradient(180deg, var(--cream), var(--linen) 46%, #f3eee7);
+        background: #fff;
       }
-      a { color: inherit; text-decoration: none; }
-      button, input, select { font: inherit; }
+      button, input, select, textarea { font: inherit; }
       button { cursor: pointer; }
-
       .toolbar {
         position: fixed;
-        z-index: 30;
+        z-index: 40;
         top: 18px;
         right: 18px;
         display: flex;
         gap: 8px;
-        border: 1px solid var(--oat);
+        border: 1px solid var(--line);
         border-radius: 999px;
-        background: rgba(255, 249, 239, .94);
+        background: rgba(255, 255, 255, .92);
         padding: 8px;
-        box-shadow: 0 14px 40px rgba(68, 58, 51, .12);
-        backdrop-filter: blur(12px);
+        box-shadow: 0 12px 36px rgba(20, 28, 38, .1);
+        backdrop-filter: blur(14px);
       }
       .toolbar button, .admin button {
-        border: 1px solid var(--oat);
+        border: 1px solid var(--line);
         border-radius: 999px;
-        background: var(--cream);
-        color: var(--cocoa);
+        background: #fff;
+        color: var(--text);
         padding: 9px 14px;
         font-size: 13px;
       }
       .toolbar .primary, .admin .primary {
-        border-color: var(--cocoa);
-        background: var(--cocoa);
-        color: var(--cream);
+        border-color: var(--text);
+        background: var(--text);
+        color: #fff;
       }
       .hint {
         position: fixed;
-        z-index: 20;
+        z-index: 35;
         top: 78px;
         right: 22px;
-        max-width: 330px;
-        border: 1px solid var(--oat);
-        border-radius: 8px;
-        background: rgba(255, 249, 239, .96);
+        max-width: 360px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: rgba(255, 255, 255, .95);
         padding: 12px 14px;
-        color: var(--taupe);
+        color: var(--muted);
         font-size: 13px;
         line-height: 1.6;
       }
       .hidden { display: none; }
       .editing [data-edit] {
-        outline: 1px dashed rgba(123, 112, 103, .55);
+        outline: 1px dashed #9aa3ad;
         outline-offset: 3px;
         border-radius: 4px;
         cursor: text;
       }
-      .editing [data-edit]:focus {
-        outline: 2px solid var(--almond);
-        background: rgba(255, 249, 239, .72);
+      .editing [data-edit]:focus { outline: 2px solid #222; background: #fafafa; }
+      .page { max-width: 1800px; margin: 0 auto; padding: 0 6.6vw 80px; }
+      .top { padding: 54px 0 72px; text-align: center; }
+      .brand { margin: 0; color: var(--text); font-size: 18px; font-weight: 500; letter-spacing: .18em; text-transform: uppercase; }
+      .intro { max-width: 760px; margin: 18px auto 0; color: #5f6772; font-size: 17px; line-height: 1.7; }
+      .category-bar { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 30px; }
+      .category-filter {
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: #fff;
+        color: var(--muted);
+        padding: 10px 17px;
+        font-size: 14px;
       }
-
-      .shell, .section, .footer-grid {
-        width: min(100%, 1280px);
-        margin: 0 auto;
-        padding-left: 40px;
-        padding-right: 40px;
-      }
-      .shell { padding-top: 24px; }
-      .header {
+      .category-filter.active { border-color: var(--text); background: var(--text); color: #fff; }
+      .collection-head {
         display: flex;
         align-items: center;
         justify-content: space-between;
         gap: 24px;
-        padding: 12px 0;
-      }
-      .brand { font-size: 20px; font-weight: 700; letter-spacing: .18em; }
-      .nav { display: flex; gap: 32px; color: var(--taupe); font-size: 14px; }
-
-      .hero {
-        display: grid;
-        grid-template-columns: 1.02fr .98fr;
-        overflow: hidden;
-        margin-top: 32px;
-        border: 1px solid var(--oat);
-        border-radius: 8px;
-        background: var(--cream);
-        box-shadow: 0 18px 50px rgba(68, 58, 51, .08);
-      }
-      .hero-copy {
-        display: flex;
-        min-height: 430px;
-        flex-direction: column;
-        justify-content: center;
-        padding: 56px;
-      }
-      .eyebrow {
-        margin: 0;
-        color: var(--almond);
-        font-size: 12px;
-        letter-spacing: .26em;
-        text-transform: uppercase;
-      }
-      h1 {
-        max-width: 620px;
-        margin: 20px 0 0;
-        font-size: clamp(40px, 6vw, 64px);
-        line-height: 1.08;
-      }
-      h2 { margin: 8px 0 0; font-size: 32px; }
-      .lead {
-        max-width: 540px;
-        margin: 24px 0 0;
-        color: var(--taupe);
+        margin-bottom: 30px;
+        color: #4a4f56;
         font-size: 18px;
-        line-height: 1.75;
       }
-      .pills { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 36px; }
-      .pill {
-        border: 1px solid var(--oat);
+      .sort { display: flex; align-items: center; gap: 10px; }
+      .sort select { border: 0; background: transparent; color: #343941; font-size: 18px; }
+      .grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 44px 30px; }
+      .product { min-width: 0; }
+      .image-wrap { position: relative; overflow: hidden; aspect-ratio: 1 / 1; background: #f8f8f8; }
+      .image-wrap img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .35s ease, opacity .18s ease; }
+      .product:hover .image-wrap img { transform: scale(1.025); }
+      .info { padding-top: 18px; }
+      .type { margin: 0 0 8px; color: #a0a3aa; font-size: 16px; }
+      .name { margin: 0; color: var(--text); font-size: 18px; font-weight: 500; line-height: 1.35; }
+      .swatches { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+      .dot {
+        position: relative;
+        width: 23px;
+        height: 23px;
+        border: 1px solid rgba(0, 0, 0, .08);
         border-radius: 999px;
-        background: var(--cream);
-        color: var(--taupe);
-        padding: 10px 20px;
-        font-size: 14px;
+        background: var(--dot);
+        transition: transform .18s ease, box-shadow .18s ease;
       }
-      .pill.active { border-color: var(--cocoa); background: var(--cocoa); color: var(--cream); }
-      .stats {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        max-width: 540px;
-        margin-top: 40px;
-        border-top: 1px solid rgba(232, 222, 209, .82);
-        border-bottom: 1px solid rgba(232, 222, 209, .82);
-        padding: 16px 0;
-        text-align: center;
-      }
-      .stats div + div { border-left: 1px solid rgba(232, 222, 209, .82); }
-      .stats strong { display: block; font-size: 18px; }
-      .stats span { display: block; margin-top: 4px; color: var(--taupe); font-size: 12px; }
-      .hero-media { position: relative; min-height: 520px; background: var(--linen); }
-      .hero-media img, .image img { display: block; width: 100%; height: 100%; object-fit: cover; }
-      .note {
+      .dot:hover { transform: translateY(-2px) scale(1.18); box-shadow: 0 0 0 4px #fff, 0 0 0 5px rgba(23, 35, 49, .22); }
+      .dot::after {
+        content: attr(data-label);
         position: absolute;
-        right: 20px;
-        bottom: 20px;
-        width: min(288px, calc(100% - 40px));
-        border: 1px solid rgba(255, 255, 255, .45);
-        border-radius: 8px;
-        background: rgba(255, 249, 239, .84);
-        padding: 16px;
-        color: var(--taupe);
-        font-size: 14px;
-        line-height: 1.6;
-        backdrop-filter: blur(12px);
-      }
-      .note strong { display: block; color: var(--cocoa); }
-
-      .section { padding-top: 48px; padding-bottom: 48px; }
-      .section-head {
-        display: flex;
-        align-items: flex-end;
-        justify-content: space-between;
-        gap: 24px;
-        margin-bottom: 28px;
-      }
-      .section-head p { max-width: 440px; margin: 0; color: var(--taupe); font-size: 14px; line-height: 1.75; }
-      .category-grid, .product-grid {
-        display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 18px;
-      }
-      .category-card, .card {
-        border: 1px solid rgba(232, 222, 209, .72);
-        border-radius: 8px;
-        background: var(--cream);
-        transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease;
-      }
-      .category-card { padding: 20px; color: var(--cocoa); text-align: left; }
-      .category-card:hover, .card:hover {
-        transform: translateY(-4px);
-        border-color: var(--almond);
-        box-shadow: 0 18px 50px rgba(68, 58, 51, .08);
-      }
-      .category-card.active { border-color: var(--cocoa); background: var(--cocoa); color: var(--cream); }
-      .category-title { display: flex; align-items: start; justify-content: space-between; gap: 16px; }
-      .count { border-radius: 999px; background: var(--linen); color: var(--taupe); padding: 4px 10px; font-size: 12px; }
-      .active .count { background: rgba(255, 249, 239, .14); color: var(--cream); }
-      .category-card p { margin: 12px 0 0; color: var(--taupe); font-size: 14px; line-height: 1.65; }
-      .category-card.active p { color: rgba(255, 249, 239, .78); }
-      .card { overflow: hidden; box-shadow: 0 8px 24px rgba(68, 58, 51, .04); }
-      .image { position: relative; aspect-ratio: 4 / 5; overflow: hidden; background: var(--linen); }
-      .image img { transition: transform .42s ease; }
-      .card:hover .image img { transform: scale(1.035); }
-      .badge {
-        position: absolute;
-        left: 16px;
-        top: 16px;
+        left: 50%;
+        bottom: calc(100% + 9px);
+        transform: translateX(-50%);
+        pointer-events: none;
+        opacity: 0;
+        white-space: nowrap;
         border-radius: 999px;
-        background: rgba(255, 249, 239, .88);
-        padding: 5px 12px;
-        color: var(--cocoa);
+        background: var(--text);
+        color: #fff;
+        padding: 5px 8px;
         font-size: 11px;
-        font-weight: 700;
-        letter-spacing: .18em;
-        text-transform: uppercase;
-        backdrop-filter: blur(8px);
+        transition: opacity .18s ease;
       }
-      .body { padding: 20px; }
-      .category { margin: 0 0 8px; color: var(--almond); font-size: 12px; letter-spacing: .22em; text-transform: uppercase; }
-      h3 { margin: 0; font-size: 18px; line-height: 1.35; }
-      .meta { display: grid; gap: 8px; margin: 18px 0 0; color: var(--taupe); font-size: 14px; }
-      .meta div, .price { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
-      .meta strong, .price strong { color: var(--cocoa); }
-      .color { display: inline-flex; align-items: center; gap: 8px; }
-      .swatch { width: 12px; height: 12px; border: 1px solid var(--oat); border-radius: 999px; }
-      .available { margin-top: 16px; }
-      .available-label { margin: 0 0 8px; color: var(--taupe); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; }
-      .color-list { display: flex; flex-wrap: wrap; gap: 8px; }
-      .color-chip {
-        border: 1px solid var(--oat);
-        border-radius: 999px;
-        background: rgba(255, 255, 255, .45);
-        color: var(--taupe);
-        padding: 5px 10px;
-        font-size: 12px;
-      }
-      .price { margin-top: 18px; border-top: 1px solid rgba(232, 222, 209, .72); padding-top: 16px; }
-      .price span { color: var(--taupe); font-size: 12px; letter-spacing: .18em; text-transform: uppercase; }
-
-      footer { margin-top: 40px; border-top: 1px solid var(--oat); background: rgba(255, 249, 239, .7); }
-      .footer-grid { display: grid; grid-template-columns: 1.2fr .8fr .8fr; gap: 32px; padding-top: 40px; padding-bottom: 40px; }
-      footer p, address { color: var(--taupe); font-size: 14px; font-style: normal; line-height: 1.8; }
-      footer h3 { font-size: 14px; letter-spacing: .2em; text-transform: uppercase; }
-
+      .dot:hover::after { opacity: 1; }
+      .more { color: #3a4654; font-size: 15px; }
       .admin {
         position: fixed;
-        z-index: 40;
+        z-index: 50;
         top: 0;
         right: 0;
-        width: min(430px, 100%);
+        width: min(520px, 100%);
         height: 100vh;
         overflow: auto;
-        border-left: 1px solid var(--oat);
-        background: rgba(255, 249, 239, .98);
-        box-shadow: -18px 0 48px rgba(68, 58, 51, .12);
+        border-left: 1px solid var(--line);
+        background: rgba(255, 255, 255, .98);
+        box-shadow: -18px 0 50px rgba(20, 28, 38, .12);
         padding: 24px;
         transform: translateX(100%);
         transition: transform .24s ease;
@@ -271,32 +152,29 @@
       .admin-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 18px; }
       .admin-head h2 { margin: 0; font-size: 24px; }
       .admin-form { display: grid; gap: 14px; }
-      .admin-form label { display: grid; gap: 7px; color: var(--taupe); font-size: 13px; }
-      .admin-form input, .admin-form select {
+      .admin-form label { display: grid; gap: 7px; color: var(--muted); font-size: 13px; }
+      .admin-form input, .admin-form select, .admin-form textarea {
         width: 100%;
-        border: 1px solid var(--oat);
+        border: 1px solid var(--line);
         border-radius: 8px;
-        background: white;
-        color: var(--cocoa);
+        background: #fff;
+        color: var(--text);
         padding: 11px 12px;
       }
+      .admin-form textarea { min-height: 110px; resize: vertical; line-height: 1.55; }
       .admin-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; }
-      .admin-note { color: var(--taupe); font-size: 13px; line-height: 1.7; }
-
-      @media (max-width: 1024px) {
-        .category-grid, .product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      }
-      @media (max-width: 760px) {
+      .admin-note { color: var(--muted); font-size: 13px; line-height: 1.7; }
+      .footer { margin-top: 78px; border-top: 1px solid var(--line); padding: 34px 0 0; color: var(--muted); font-size: 14px; text-align: center; }
+      @media (max-width: 1200px) { .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 850px) {
+        .page { padding-left: 22px; padding-right: 22px; }
         .toolbar { left: 12px; right: 12px; justify-content: center; flex-wrap: wrap; border-radius: 14px; }
         .hint { left: 16px; right: 16px; top: 96px; max-width: none; }
-        .shell, .section, .footer-grid { padding-left: 20px; padding-right: 20px; }
-        .nav { display: none; }
-        .hero, .footer-grid { grid-template-columns: 1fr; }
-        .hero-copy { min-height: auto; padding: 44px 28px; }
-        .hero-media { min-height: 320px; }
-        .section-head { display: block; }
-        .category-grid, .product-grid { grid-template-columns: 1fr; }
+        .top { padding-top: 92px; }
+        .collection-head { align-items: flex-start; flex-direction: column; }
+        .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 34px 18px; }
       }
+      @media (max-width: 560px) { .grid { grid-template-columns: 1fr; } }
     </style>
   </head>
   <body>
@@ -306,7 +184,7 @@
       <button id="saveBtn">Save</button>
       <button id="resetBtn">Reset</button>
     </div>
-    <div id="hint" class="hint hidden">Text edit mode is on. Click page text to edit it, or use Product Admin to update product data.</div>
+    <div id="hint" class="hint hidden">Text edit mode is on. Use Product Admin to upload local images and set one image per color swatch.</div>
 
     <aside class="admin" id="adminPanel">
       <div class="admin-head">
@@ -316,14 +194,16 @@
       <form class="admin-form" id="productForm">
         <label>Select product<select id="productSelect"></select></label>
         <label>Product name<input id="productName" type="text" /></label>
+        <label>Product type<input id="productType" type="text" /></label>
         <label>Category<select id="productCategory"></select></label>
-        <label>Material / selling point<input id="productMaterial" type="text" /></label>
-        <label>Size<input id="productSize" type="text" /></label>
-        <label>Main color<input id="productColor" type="text" /></label>
-        <label>Available colors<input id="productColors" type="text" placeholder="Cream, Oat, Blush" /></label>
-        <label>Price<input id="productPrice" type="text" /></label>
-        <label>Swatch color<input id="productSwatch" type="color" /></label>
-        <label>Image URL or Pexels image ID<input id="productImage" type="text" /></label>
+        <label>Main image URL / Pexels ID<input id="productImage" type="text" /></label>
+        <label>Upload main image from computer<input id="mainImageUpload" type="file" accept="image/*" /></label>
+        <label>
+          Color variants, one per line: name | color | image URL or Pexels ID
+          <textarea id="variantText" placeholder="Cream | #eee5dc | 13920052"></textarea>
+        </label>
+        <label>Upload image for selected variant<select id="variantSelect"></select></label>
+        <label><input id="variantImageUpload" type="file" accept="image/*" /></label>
         <div class="admin-actions">
           <button class="primary" type="submit">Save product</button>
           <button id="deleteProductBtn" type="button">Delete product</button>
@@ -333,136 +213,80 @@
           <button id="resetProductsBtn" type="button">Restore products</button>
         </div>
       </form>
-      <p class="admin-note">Changes update the page immediately and are saved in this browser. Available colors should be separated by commas.</p>
+      <p class="admin-note">Local uploads are saved in this browser. For GitHub/Vercel public deployment, upload image files to your repo and use paths such as images/cream.jpg.</p>
     </aside>
 
-    <main>
-      <section class="shell">
-        <header class="header">
-          <a class="brand" data-edit="brand" href="#top">LUMI STEPS</a>
-          <nav class="nav">
-            <a href="#categories">Categories</a>
-            <a href="#products">Products</a>
-            <a href="#contact">Contact</a>
-          </nav>
-        </header>
-
-        <section class="hero" id="top">
-          <div class="hero-copy">
-            <p class="eyebrow" data-edit="heroEyebrow">Baby Shoes Catalog</p>
-            <h1 data-edit="heroTitle">Gentle steps for quiet, beautiful days.</h1>
-            <p class="lead" data-edit="heroLead">Soft newborn booties and first-walker shoes designed with warm neutrals, cloud-light comfort, and a calm mother-and-baby mood.</p>
-            <div class="pills">
-              <span class="pill active" data-edit="pill1">Spring Collection</span>
-              <span class="pill" data-edit="pill2">View Catalog</span>
-            </div>
-            <div class="stats">
-              <div><strong data-edit="stat1">8</strong><span data-edit="stat1Label">Styles</span></div>
-              <div><strong data-edit="stat2">10-16</strong><span data-edit="stat2Label">Size cm</span></div>
-              <div><strong data-edit="stat3">4</strong><span data-edit="stat3Label">Series</span></div>
-            </div>
-          </div>
-          <div class="hero-media">
-            <img src="https://images.pexels.com/photos/13920052/pexels-photo-13920052.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Soft baby shoes" />
-            <div class="note">
-              <strong data-edit="noteTitle">New season essentials</strong>
-              <span data-edit="noteText">Lightweight soles, soft linings, and muted colors for everyday comfort.</span>
-            </div>
-          </div>
-        </section>
+    <main class="page">
+      <section class="top">
+        <p class="brand" data-edit="brand">LUMI STEPS</p>
+        <p class="intro" data-edit="intro">Soft baby shoes made for natural movement. Our barefoot-style shoes support growing feet the way nature intended.</p>
+        <div class="category-bar" id="categoryBar"></div>
       </section>
 
-      <section class="section" id="categories">
-        <div class="section-head">
-          <div>
-            <p class="eyebrow" data-edit="browseEyebrow">Browse</p>
-            <h2 data-edit="categoryTitle">Product Categories</h2>
-          </div>
-          <p data-edit="categoryIntro">Four calm product families for newborn gifting, indoor comfort, and first-walker moments.</p>
+      <section>
+        <div class="collection-head">
+          <div id="productCount">8 products</div>
+          <label class="sort">
+            <span>Sort by:</span>
+            <select id="sortSelect">
+              <option>Best selling</option>
+              <option>Newest</option>
+            </select>
+          </label>
         </div>
-        <div class="category-grid" id="categoryGrid"></div>
+        <div class="grid" id="productGrid"></div>
       </section>
 
-      <section class="section" id="products">
-        <div class="section-head">
-          <div>
-            <p class="eyebrow" data-edit="collectionEyebrow">Collection</p>
-            <h2 id="activeTitle">Newborn</h2>
-          </div>
-          <p id="activeCount">2 curated styles</p>
-        </div>
-        <div class="product-grid" id="productGrid"></div>
-      </section>
-
-      <footer id="contact">
-        <div class="footer-grid">
-          <div>
-            <p class="brand" data-edit="footerBrand">LUMI STEPS</p>
-            <p data-edit="footerIntro">Minimal baby shoes in soft natural tones, crafted for newborn gifting, early steps, and warm everyday moments.</p>
-          </div>
-          <div>
-            <h3 data-edit="contactTitle">Contact</h3>
-            <address>
-              <span data-edit="email">hello@lumisteps.com</span><br />
-              <span data-edit="phone">+82 02 1844 3060</span><br />
-              <span data-edit="address">Seoul, South Korea</span>
-            </address>
-          </div>
-          <div>
-            <h3 data-edit="socialTitle">Social</h3>
-            <p data-edit="socials">Instagram / Kakao / Pinterest</p>
-          </div>
-        </div>
+      <footer class="footer">
+        <span data-edit="footerText">hello@lumisteps.com · Seoul, South Korea · Instagram / Kakao / Pinterest</span>
       </footer>
     </main>
 
     <script>
-      const TEXT_KEY = "lumi-admin-text-v2";
-      const PRODUCTS_KEY = "lumi-admin-products-v2";
-      const categories = [
-        ["Newborn", "Tiny, feather-soft pairs for first days and gifting."],
-        ["Soft Sole", "Flexible crib shoes for naps, cuddles, and indoor comfort."],
-        ["First Walker", "Light support for steady first steps around the home."],
-        ["Gift Set", "Quietly wrapped essentials for showers and celebrations."],
+      const TEXT_KEY = "lumi-variant-text-v1";
+      const PRODUCTS_KEY = "lumi-variant-products-v1";
+      const categories = ["All", "Sneaker", "Best Seller", "Sandal", "Gift Set"];
+      const standardVariants = (firstImage) => [
+        { name: "White", color: "#ffffff", image: firstImage },
+        { name: "Black", color: "#111111", image: "11363793" },
+        { name: "Brown", color: "#8b5a3c", image: "3026856" },
+        { name: "Pink", color: "#f6b6c8", image: "15844904" },
+        { name: "Red", color: "#c83a32", image: "13920052" }
       ];
       const defaults = [
-        ["Cloud Knit Booties", "Newborn", "Cotton knit lining", "11-13 cm", "Cream / Oat", "Cream, Oat, Ivory", "$32", "#EDE1D0", "13920052"],
-        ["Linen Crib Shoes", "Newborn", "Breathable linen blend", "10-12 cm", "Natural Linen", "Natural Linen, Cream, Sand", "$29", "#DDD0BE", "13920052"],
-        ["Mellow Mary Janes", "Soft Sole", "Soft vegan suede", "12-14 cm", "Milk Tea", "Milk Tea, Cocoa, Ivory", "$38", "#CBB49D", "11363793"],
-        ["Sunday Ribbon Flats", "Soft Sole", "Flexible cotton sole", "12-15 cm", "Blush Beige", "Blush Beige, Cream, Rose", "$42", "#E7CEC3", "15844904"],
-        ["Petit Walker Shoes", "First Walker", "Padded ankle support", "13-15 cm", "Warm Gray", "Warm Gray, Almond, Cream", "$46", "#BEB8AF", "3026856"],
-        ["Soft Suede Sneakers", "First Walker", "Non-slip soft sole", "13-16 cm", "Almond", "Almond, Oat, Cocoa", "$49", "#D4B99F", "3026856"],
-        ["First Steps Set", "Gift Set", "Gift box included", "11-15 cm", "Cream / Cocoa", "Cream / Cocoa, Ivory / Blush, Oat / Almond", "$58", "#8D7663", "11363793"],
-        ["Cozy Welcome Box", "Gift Set", "Booties and keepsake bag", "10-13 cm", "Ivory / Blush", "Ivory / Blush, Cream / Oat, Milk Tea", "$64", "#F0DDD2", "15844904"],
+        { name: "The Low Top", type: "Sneaker", category: "Sneaker", image: "13920052", variants: standardVariants("13920052") },
+        { name: "The T Bar", type: "Best Seller", category: "Best Seller", image: "11363793", variants: standardVariants("11363793") },
+        { name: "The Closed Toe Sandal", type: "Sandal", category: "Sandal", image: "3026856", variants: standardVariants("3026856") },
+        { name: "The Sebby Sandal", type: "Sandal", category: "Sandal", image: "15844904", variants: standardVariants("15844904") },
+        { name: "The Soft Walker", type: "Sneaker", category: "Sneaker", image: "13920052", variants: standardVariants("13920052") },
+        { name: "The First Step", type: "Best Seller", category: "Best Seller", image: "11363793", variants: standardVariants("11363793") },
+        { name: "The Summer Sandal", type: "Sandal", category: "Sandal", image: "3026856", variants: standardVariants("3026856") },
+        { name: "Welcome Baby Set", type: "Gift Set", category: "Gift Set", image: "15844904", variants: standardVariants("15844904") }
       ];
       let products = readProducts();
-      let activeCategory = "Newborn";
+      let activeCategory = "All";
       let selected = 0;
       let editing = false;
-
       const $ = (id) => document.getElementById(id);
       const fields = {
-        select: $("productSelect"),
-        name: $("productName"),
-        category: $("productCategory"),
-        material: $("productMaterial"),
-        size: $("productSize"),
-        color: $("productColor"),
-        colors: $("productColors"),
-        price: $("productPrice"),
-        swatch: $("productSwatch"),
-        image: $("productImage"),
+        select: $("productSelect"), name: $("productName"), type: $("productType"), category: $("productCategory"),
+        image: $("productImage"), variants: $("variantText"), variantSelect: $("variantSelect"),
+        mainUpload: $("mainImageUpload"), variantUpload: $("variantImageUpload")
       };
 
       function clone(value) { return JSON.parse(JSON.stringify(value)); }
-      function normalize(item) {
-        if (item.length === 9) return item;
-        return [item[0], item[1], item[2], item[3], item[4], item[4], item[5], item[6], item[7]];
+      function normalizeProduct(product) {
+        if (product.variants) return product;
+        const variants = String(product.swatches || "Cream=#eee5dc").split(",").map((item) => {
+          const [name, color] = item.split("=").map((part) => part.trim());
+          return { name: name || "Color", color: color || "#ddd", image: product.image || "13920052" };
+        });
+        return { ...product, variants };
       }
       function readProducts() {
         try {
           const saved = JSON.parse(localStorage.getItem(PRODUCTS_KEY) || "null");
-          return Array.isArray(saved) && saved.length ? saved.map(normalize) : clone(defaults);
+          return Array.isArray(saved) && saved.length ? saved.map(normalizeProduct) : clone(defaults);
         } catch {
           return clone(defaults);
         }
@@ -484,90 +308,84 @@
         });
       }
       function imageSrc(value) {
-        return /^https?:\/\//i.test(value)
+        return /^data:image\//i.test(value) || /^https?:\/\//i.test(value) || value.includes("/")
           ? value
           : `https://images.pexels.com/photos/${value}/pexels-photo-${value}.jpeg?auto=compress&cs=tinysrgb&w=900`;
       }
-      function count(category) { return products.filter((item) => item[1] === category).length; }
-      function colorChips(colors) {
-        return String(colors || "")
-          .split(",")
-          .map((color) => color.trim())
-          .filter(Boolean)
-          .map((color) => `<span class="color-chip">${color}</span>`)
-          .join("");
-      }
-
-      function renderCategories() {
-        $("categoryGrid").innerHTML = categories.map(([name, desc], index) => `
-          <button class="category-card ${activeCategory === name ? "active" : ""}" type="button" data-category="${name}">
-            <div class="category-title">
-              <strong data-edit="cat${index}">${name}</strong>
-              <span class="count">${count(name)}</span>
-            </div>
-            <p data-edit="cat${index}Desc">${desc}</p>
-          </button>
-        `).join("");
-        document.querySelectorAll("[data-category]").forEach((button) => {
-          button.onclick = () => {
-            saveText();
-            activeCategory = button.dataset.category;
-            renderAll();
-            $("products").scrollIntoView({ behavior: "smooth" });
-          };
+      function fileToDataUrl(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
         });
       }
-
+      function variantsToText(variants) {
+        return (variants || []).map((v) => `${v.name} | ${v.color} | ${v.image}`).join("\\n");
+      }
+      function textToVariants(text, fallbackImage) {
+        return String(text || "").split("\\n").map((line) => line.trim()).filter(Boolean).map((line) => {
+          const [name, color, image] = line.split("|").map((part) => part.trim());
+          return { name: name || "Color", color: color || "#ddd", image: image || fallbackImage || "13920052" };
+        });
+      }
+      function renderCategories() {
+        $("categoryBar").innerHTML = categories.map((category) => `<button class="category-filter ${category === activeCategory ? "active" : ""}" data-category="${category}" type="button">${category}</button>`).join("");
+        document.querySelectorAll("[data-category]").forEach((button) => {
+          button.onclick = () => { activeCategory = button.dataset.category; renderAll(); };
+        });
+      }
+      function visibleProducts() {
+        const filtered = activeCategory === "All" ? [...products] : products.filter((product) => product.category === activeCategory);
+        const sort = $("sortSelect").value;
+        if (sort === "Newest") filtered.reverse();
+        return filtered;
+      }
       function renderProducts() {
-        const visible = products.filter((item) => item[1] === activeCategory);
-        $("activeTitle").innerText = activeCategory;
-        $("activeCount").innerText = `${visible.length} curated styles`;
-        $("productGrid").innerHTML = visible.map((item) => {
-          const index = products.indexOf(item);
-          const [name, category, material, size, color, colors, price, swatch, image] = item;
+        const visible = visibleProducts();
+        $("productCount").innerText = `${visible.length} products`;
+        $("productGrid").innerHTML = visible.map((product) => {
+          const variants = product.variants || [];
+          const shown = variants.slice(0, 4);
+          const rest = variants.length - shown.length;
           return `
-            <article class="card">
-              <div class="image">
-                <img src="${imageSrc(image)}" alt="${name}" />
-                <span class="badge" data-edit="p${index}cat">${category}</span>
-              </div>
-              <div class="body">
-                <p class="category" data-edit="p${index}mat">${material}</p>
-                <h3 data-edit="p${index}name">${name}</h3>
-                <div class="meta">
-                  <div><span>Size</span><strong data-edit="p${index}size">${size}</strong></div>
-                  <div><span>Main color</span><strong class="color"><span class="swatch" style="background:${swatch}"></span><span data-edit="p${index}color">${color}</span></strong></div>
+            <article class="product">
+              <div class="image-wrap"><img class="product-img" src="${imageSrc(product.image)}" data-default="${imageSrc(product.image)}" alt="${product.name}" /></div>
+              <div class="info">
+                <p class="type">${product.type}</p>
+                <h3 class="name">${product.name}</h3>
+                <div class="swatches">
+                  ${shown.map((variant) => `<span class="dot" style="--dot:${variant.color}" data-label="${variant.name}" data-image="${imageSrc(variant.image)}"></span>`).join("")}
+                  ${rest > 0 ? `<span class="more">+${rest}</span>` : ""}
                 </div>
-                <div class="available">
-                  <p class="available-label">Available colors</p>
-                  <div class="color-list">${colorChips(colors)}</div>
-                </div>
-                <div class="price"><span>Price</span><strong data-edit="p${index}price">${price}</strong></div>
               </div>
             </article>
           `;
         }).join("");
+        document.querySelectorAll(".product").forEach((card) => {
+          const img = card.querySelector(".product-img");
+          card.querySelectorAll(".dot").forEach((dot) => {
+            dot.onmouseenter = () => { img.src = dot.dataset.image; };
+            dot.onmouseleave = () => { img.src = img.dataset.default; };
+          });
+        });
       }
-
       function renderAdmin() {
-        fields.select.innerHTML = products.map((item, index) => `<option value="${index}">${item[0]} - ${item[1]}</option>`).join("");
-        fields.category.innerHTML = categories.map(([name]) => `<option value="${name}">${name}</option>`).join("");
+        fields.select.innerHTML = products.map((product, index) => `<option value="${index}">${product.name} - ${product.category}</option>`).join("");
+        fields.category.innerHTML = categories.filter((category) => category !== "All").map((category) => `<option value="${category}">${category}</option>`).join("");
         if (selected >= products.length) selected = Math.max(products.length - 1, 0);
         fields.select.value = String(selected);
         fillForm(selected);
       }
       function fillForm(index) {
-        const item = products[index];
-        if (!item) return;
-        fields.name.value = item[0];
-        fields.category.value = item[1];
-        fields.material.value = item[2];
-        fields.size.value = item[3];
-        fields.color.value = item[4];
-        fields.colors.value = item[5];
-        fields.price.value = item[6];
-        fields.swatch.value = item[7];
-        fields.image.value = item[8];
+        const product = products[index];
+        if (!product) return;
+        fields.name.value = product.name;
+        fields.type.value = product.type;
+        fields.category.value = product.category;
+        fields.image.value = product.image;
+        fields.variants.value = variantsToText(product.variants);
+        fields.variantSelect.innerHTML = (product.variants || []).map((v, i) => `<option value="${i}">${v.name}</option>`).join("");
       }
       function renderAll() {
         renderCategories();
@@ -575,7 +393,6 @@
         renderAdmin();
         applyText();
       }
-
       $("editBtn").onclick = () => {
         editing = !editing;
         document.body.classList.toggle("editing", editing);
@@ -585,27 +402,41 @@
       };
       $("adminBtn").onclick = () => $("adminPanel").classList.add("open");
       $("closeAdminBtn").onclick = () => $("adminPanel").classList.remove("open");
+      $("sortSelect").onchange = renderProducts;
       fields.select.onchange = () => { selected = Number(fields.select.value); fillForm(selected); };
+      fields.mainUpload.onchange = async () => {
+        const file = fields.mainUpload.files[0];
+        if (!file) return;
+        fields.image.value = await fileToDataUrl(file);
+        fields.mainUpload.value = "";
+      };
+      fields.variantUpload.onchange = async () => {
+        const file = fields.variantUpload.files[0];
+        if (!file) return;
+        const variants = textToVariants(fields.variants.value, fields.image.value);
+        const index = Number(fields.variantSelect.value || 0);
+        if (variants[index]) {
+          variants[index].image = await fileToDataUrl(file);
+          fields.variants.value = variantsToText(variants);
+        }
+        fields.variantUpload.value = "";
+      };
       $("productForm").onsubmit = (event) => {
         event.preventDefault();
-        products[selected] = [
-          fields.name.value.trim() || "Untitled Product",
-          fields.category.value,
-          fields.material.value.trim() || "Soft baby essential",
-          fields.size.value.trim() || "10-12 cm",
-          fields.color.value.trim() || "Cream",
-          fields.colors.value.trim() || fields.color.value.trim() || "Cream",
-          fields.price.value.trim() || "$0",
-          fields.swatch.value || "#EDE1D0",
-          fields.image.value.trim() || "13920052",
-        ];
+        const variants = textToVariants(fields.variants.value, fields.image.value);
+        products[selected] = {
+          name: fields.name.value.trim() || "Untitled Product",
+          type: fields.type.value.trim() || "Shoe",
+          category: fields.category.value,
+          image: fields.image.value.trim() || variants[0]?.image || "13920052",
+          variants: variants.length ? variants : [{ name: "Cream", color: "#eee5dc", image: fields.image.value.trim() || "13920052" }]
+        };
         activeCategory = fields.category.value;
         saveProducts();
         renderAll();
-        $("products").scrollIntoView({ behavior: "smooth" });
       };
       $("addProductBtn").onclick = () => {
-        products.push(["New Baby Shoes", activeCategory, "Soft baby essential", "10-12 cm", "Cream", "Cream, Oat, Blush", "$39", "#EDE1D0", "13920052"]);
+        products.push({ name: "New Baby Shoe", type: "Sneaker", category: activeCategory === "All" ? "Sneaker" : activeCategory, image: "13920052", variants: standardVariants("13920052") });
         selected = products.length - 1;
         saveProducts();
         renderAll();
@@ -620,7 +451,7 @@
       $("resetProductsBtn").onclick = () => {
         products = clone(defaults);
         selected = 0;
-        activeCategory = "Newborn";
+        activeCategory = "All";
         saveProducts();
         renderAll();
       };
@@ -635,7 +466,6 @@
         localStorage.removeItem(PRODUCTS_KEY);
         location.reload();
       };
-
       renderAll();
     </script>
   </body>
